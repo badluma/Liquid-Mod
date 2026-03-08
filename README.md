@@ -61,6 +61,17 @@ curl -fsSL https://ollama.com/install.sh | sh
 ollama pull sam860/lfm2:1.2b
 ```
 
+### Creating the bot
+![Creating the bot application](./instructions/screenshot-01-bot-creation.png)
+![Setting bot permissions](./instructions/screenshot-02-bot-permissions.png)
+![Copying the bot token](./instructions/screenshot-03-copy-token.png)
+![Opening server settings](./instructions/screenshot-04-server-settings.png)
+![Creating a bot role](./instructions/screenshot-05-create-role.png)
+![Setting role permissions](./instructions/screenshot-06-role-permissions.png)
+![Managing role order](./instructions/screenshot-07-role-order.png)
+![Assigning bot role](./instructions/screenshot-08-bot-role.png)
+![Final configuration](./instructions/screenshot-09-reset-token.png)
+
 ---
 
 ## Configuration

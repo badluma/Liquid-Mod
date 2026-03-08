@@ -54,15 +54,16 @@ async def on_message(message):
             await message.delete()
 
             try:
+                await message.author.send(f"Your account has been kicked because your message contains banned text: {item}")
+            except discord.Forbidden:
+                print(f"Couldn't DM {message.author.name}.")
+
+            try:
                 await message.author.kick(reason="Sending banned text")
             except discord.Forbidden:
                 print(f"Insufficient permissions to kick {message.author.name}.")
                 continue
 
-            try:
-                await message.author.send(f"Your account has been kicked because your message contains banned text: {item}")
-            except discord.Forbidden:
-                print(f"Couldn't DM {message.author.name}.")
             continue
 
 
@@ -73,12 +74,11 @@ async def on_message(message):
             await message.delete()
 
             try:
-                await message.author.ban(reason=f"Sending banned text")
-            except discord.Forbidden:
-                print(f"Insufficient permissions to ban {message.author.name}.")
-                continue
-
-            try:
+                try:
+                    await message.author.ban(reason=f"Sending banned text")
+                except discord.Forbidden:
+                    print(f"Insufficient permissions to ban {message.author.name}.")
+                    continue
                 await message.author.send(f"Your account has been banned because your message contains banned text: {item}")
             except discord.Forbidden:
                 print(f"Couldn't DM {message.author.name}")
