@@ -4,7 +4,11 @@ import ollama
 
 import discord
 import dotenv
-import tomllib
+import sys
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 dotenv.load_dotenv()
 with open("config.toml", "rb") as f:
@@ -20,6 +24,21 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 
+async def direct_msg(message, author_message):
+    user = await client.fetch_user(author_message.author.id)
+    if user.dm_channel is None:
+        await user.create_dm()
+    try:
+        await user.dm_channel.send(message)
+    except (discord.Forbidden, discord.HTTPException):
+        print(f"Couldn't DM {author_message.author.name}.")
+def get_channel(message):
+    if message.guild is None:
+        return f"Direct Message"
+    else:
+        return str(message.channel)
+
+
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}\n')
@@ -27,9 +46,10 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(GREY + f"[{message.channel}] " + CYAN + f"{message.author.name}:" + DEFAULT)
-    print(message.content)
-    print()
+    print(GREY + f"[{get_channel(message)}] " + CYAN + f"{message.author.name}: " + DEFAULT + message.content)
+
+    if message.guild is None:
+        return
 
     if (message.author == client.user or message.author.guild_permissions.administrator) and not config["debug"]["debug_mode"]:
         return
@@ -39,12 +59,9 @@ async def on_message(message):
         if item.lower() in message.content.lower():
 
             await message.delete()
+            await direct_msg(f"Your message has been deleted because your message contains banned text: {item}", message)
 
-            try:
-                await message.author.send(f"Your message has been deleted because it contains banned text: {item}")
-            except discord.Forbidden:
-                print(f"Couldn't DM {message.author.name}.")
-            continue
+
 
 
     for item in config["moderation"]["kick"]:
@@ -53,13 +70,18 @@ async def on_message(message):
 
             await message.delete()
 
-            try:
-                await message.author.send(f"Your account has been kicked because your message contains banned text: {item}")
-            except discord.Forbidden:
-                print(f"Couldn't DM {message.author.name}.")
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
+
+            await direct_msg(f"Your account has been kicked because your message contains banned text: {item}", message)
 
             try:
-                await message.author.kick(reason="Sending banned text")
+                await member.kick(reason="Sending banned text")
             except discord.Forbidden:
                 print(f"Insufficient permissions to kick {message.author.name}.")
                 continue
@@ -73,14 +95,22 @@ async def on_message(message):
 
             await message.delete()
 
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
+
             try:
                 try:
-                    await message.author.ban(reason=f"Sending banned text")
+                    await member.ban(reason=f"Sending banned text")
                 except discord.Forbidden:
                     print(f"Insufficient permissions to ban {message.author.name}.")
                     continue
-                await message.author.send(f"Your account has been banned because your message contains banned text: {item}")
-            except discord.Forbidden:
+                await direct_msg(f"Your account has been banned because your message contains banned text: {item}", message)
+            except (discord.Forbidden, discord.HTTPException):
                 print(f"Couldn't DM {message.author.name}")
             continue
 
@@ -91,16 +121,21 @@ async def on_message(message):
 
             await message.delete()
 
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
+
             try:
-                await message.author.timeout(timedelta(minutes=config["moderation"]["time_to_mute"]), reason="Sending banned text")
+                await member.timeout(timedelta(minutes=config["moderation"]["time_to_mute"]), reason="Sending banned text")
             except discord.Forbidden:
                 print(f"Insufficient permissions to mute {message.author.name}.")
                 continue
 
-            try:
-                await message.author.send(f"Your account has been timed out for {config['moderation']['time_to_mute']} minutes because your message contains banned text: {item}")
-            except discord.Forbidden:
-                print(f"Couldn't DM {message.author.name}.")
+            await direct_msg(f"Your account has been muted for {config['moderation']['time_to_mute']} because your message contains banned text: {item}", message)
             continue
 
     if len(message.content) >= config["ai"]["min_chars"]:

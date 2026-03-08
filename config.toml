@@ -6,7 +6,9 @@
 ] # When a users message contains one of these, the message gets deleted
 "kick"   = [] # When a users message contains one of these, the message gets deleted and the user gets kicked
 "ban"    = [] # When a users message contains one of these, the message gets deleted and the user gets permanently banned
-"mute"   = [] # When a users message contains one of these, the message gets deleted and the user gets muted for a specific amount of time
+"mute"   = [
+    "nigga"
+] # When a users message contains one of these, the message gets deleted and the user gets muted for a specific amount of time
 
 "time_to_mute" = 1 # Sets the amount of minutes the user gets timeouted
 
@@ -34,12 +36,7 @@ Analyze the following message and classify it as <scam> or <fine>:
 {{INPUT}}
 """
 "model"         = "sam860/lfm2:1.2b"
-"directory"     = ""  # Installation directory for the model, leave empty for default (huggingface cache)
 "min_chars"     = 150 # Minimum amount of characters that a message has to have in order for the AI to check it
-
-"temperature"        = 0.3
-"min_p"              = 0.15
-"repetition_penalty" = 1.05
 
 [debug]
 "debug_mode" = true
