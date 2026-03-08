@@ -1,5 +1,7 @@
 # Liquid Mod
 
+A discord bot made to prevent scams on the Liquid AI Community Server
+
 ---
 
 ## Features
