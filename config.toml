@@ -1,20 +1,18 @@
 [moderation]
-"delete" = [
+delete = [
     "https://chee-ming-site.vercel.app/",
     "I am looking for a reliable and responsible partner who can expand my freelancing business.",
     "https://sessions0penseapro116.vercel.app/",
 ] # When a users message contains one of these, the message gets deleted
-"kick"   = [] # When a users message contains one of these, the message gets deleted and the user gets kicked
-"ban"    = [] # When a users message contains one of these, the message gets deleted and the user gets permanently banned
-"mute"   = [
-    "nigga"
-] # When a users message contains one of these, the message gets deleted and the user gets muted for a specific amount of time
+kick = [] # When a users message contains one of these, the message gets deleted and the user gets kicked
+ban  = [] # When a users message contains one of these, the message gets deleted and the user gets permanently banned
+mute = [] # When a users message contains one of these, the message gets deleted and the user gets muted for a specific amount of time
 
-"time_to_mute" = 1 # Sets the amount of minutes the user gets timeouted
+time_to_mute = 1 # Sets the amount of minutes the user gets timeouted
 
 [ai]
 # System prompt for the model
-"system_prompt" = """
+system_prompt = """
 You are a specialized security analyst focused on identifying fraudulent communications. Your sole task is to classify incoming messages into one of two categories: scam or legitimate.
 
 Analyze the message for indicators of common scams, including:
@@ -30,13 +28,15 @@ OUTPUT REQUIREMENTS:
 """
 
 # Prompt for the AI model to identify scam messages. Place {{INPUT}} in the spot where the message should be displayed later.
-"user_prompt"   = """
+user_prompt   = """
 Analyze the following message and classify it as <scam> or <fine>:
 
 {{INPUT}}
 """
-"model"         = "sam860/lfm2:1.2b"
-"min_chars"     = 150 # Minimum amount of characters that a message has to have in order for the AI to check it
+model_path    = "./models/LFM2.5-1.2B-Instruct-Q4_K_M.gguf" # Path to GGUF model file
+# Linux command to find GGUF files: find ~ -name "*.gguf" 2>/dev/null
+
+min_chars     = 150 # Minimum amount of characters that a message has to have in order for the AI to check it
 
 [debug]
-"debug_mode" = true
+debug_mode = false

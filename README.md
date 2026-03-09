@@ -14,8 +14,8 @@ A discord bot made to prevent scams on the Liquid AI Community Server
 
 ## Prerequisites
 
-- Python 3.11+
-- [Ollama](https://ollama.com) installed and running
+- Python 3.9+
+- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) installed with GPU support (recommended) or CPU
 - A Discord bot token with the `Message Content Intent` enabled
 
 ---
@@ -33,11 +33,56 @@ REM 2. Create and activate a virtual environment
 python -m venv venv
 venv\Scripts\activate
 
-REM 3. Install Python dependencies
-pip install discord.py python-dotenv ollama
+REM 3. Install llama-cpp-python (CPU only - for GPU support install CUDA and use cu124 wheel)
+pip install llama-cpp-python
 
-REM 4. Install Ollama from https://ollama.com/download, then pull the default model
-ollama pull sam860/lfm2:1.2b
+REM 4. Install Python dependencies
+pip install discord.py python-dotenv tomli
+
+REM 5. Download the model
+REM Download LFM2.5-1.2B-Instruct-Q4_K_M.gguf from:
+REM https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF
+REM Place it in a "models" folder in the project root
+```
+
+### Ubuntu (with llama-cpp-python)
+
+```bash
+# 1. Clone the repository
+git clone <your-repo-url>
+cd <repo-folder>
+
+# 2. Install system dependencies
+sudo apt update
+sudo apt install -y build-essential cmake git libcurl4-openssl-dev python3-dev python3-venv
+
+# 3. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 4. Install llama-cpp-python
+# For CUDA GPU support:
+pip install llama-cpp-python --force-reinstall --no-cache-dir \
+    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
+
+# For CPU only (slower, no GPU):
+# pip install llama-cpp-python
+
+# 5. Install Python dependencies
+pip install discord.py python-dotenv tomli
+
+# 6. Create models directory and download the model
+mkdir -p models
+cd models
+
+# Download the LFM2.5-1.2B-Instruct-Q4_K_M.gguf model
+wget https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/main/LFM2.5-1.2B-Instruct-Q4_K_M.gguf
+
+# Or using huggingface-cli:
+# pip install huggingface-hub
+# huggingface-cli download LiquidAI/LFM2.5-1.2B-Instruct-GGUF LFM2.5-1.2B-Instruct-Q4_K_M.gguf --local-dir .
+
+cd ..
 ```
 
 ### Unix (Linux / macOS)
@@ -47,18 +92,20 @@ ollama pull sam860/lfm2:1.2b
 git clone <your-repo-url>
 cd <repo-folder>
 
-# 2. Create and activate a virtual environment
+# 2. Install system dependencies (Linux only)
+# For Ubuntu/Debian:
+sudo apt update
+sudo apt install -y build-essential cmake git libcurl4-openssl-dev python3-dev python3-venv
+
+# 3. Create and activate a virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# 3. Install Python dependencies
-pip install discord.py python-dotenv ollama
+# 4. Install llama-cpp-python (CPU only - for GPU see Ubuntu section)
+pip install llama-cpp-python
 
-# 4. Install Ollama (if not already installed)
-curl -fsSL https://ollama.com/install.sh | sh
-
-# 5. Pull the default model
-ollama pull sam860/lfm2:1.2b
+# 5. Install Python dependencies
+pip install discord.py python-dotenv tomli
 ```
 
 ### Creating the bot
@@ -91,12 +138,8 @@ ollama pull sam860/lfm2:1.2b
 
 ## Running the Bot
 
-Make sure Ollama is running in the background, then start the bot:
+Make sure your GGUF model file is in place (see `model_path` in `config.toml`), then start the bot:
 
 ```bash
-# Ensure Ollama is running
-ollama serve
-
-# In a separate terminal, start the bot
 python main.py
 ```
