@@ -74,15 +74,6 @@ pip install discord.py python-dotenv tomli
 # 6. Create models directory and download the model
 mkdir -p models
 cd models
-
-# Download the LFM2.5-1.2B-Instruct-Q4_K_M.gguf model
-wget https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/main/LFM2.5-1.2B-Instruct-Q4_K_M.gguf
-
-# Or using huggingface-cli:
-# pip install huggingface-hub
-# huggingface-cli download LiquidAI/LFM2.5-1.2B-Instruct-GGUF LFM2.5-1.2B-Instruct-Q4_K_M.gguf --local-dir .
-
-cd ..
 ```
 
 ### Unix (Linux / macOS)
@@ -106,6 +97,19 @@ pip install llama-cpp-python
 
 # 5. Install Python dependencies
 pip install discord.py python-dotenv tomli
+```
+
+### Setting up the AI
+There is already a model included in the repo (LFM2.5-1.2b-Q4_K_M).
+However,  if you want to use your own model, you can customize it inside the `config.toml` file.
+To download a new model from HuggingFace, use the following script.
+```bash
+# Download a model of your choice using wget
+wget https://huggingface.co/url/to/your/model.gguf
+
+# Or using huggingface-cli:
+pip install huggingface-hub
+huggingface-cli download LiquidAI/LFM2.5-1.2B-Instruct-GGUF LFM2.5-1.2B-Instruct-Q4_K_M.gguf --local-dir .
 ```
 
 ### Creating the bot
