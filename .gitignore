@@ -1,9 +1,6 @@
 .DS_Store
 .env
-.idea/discord.xml
-.idea/icon.svg
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/Liquid Mod.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
+.idea
+.miniforge3
+.ruff_cache
+.venv
