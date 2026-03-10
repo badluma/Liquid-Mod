@@ -39,4 +39,4 @@ model_path = "./models/LFM2.5-1.2B-Instruct-Q4_K_M.gguf" # Path to GGUF model fi
 min_chars = 150 # Minimum amount of characters that a message has to have in order for the AI to check it
 
 [debug]
-debug_mode = false
+debug_mode = true

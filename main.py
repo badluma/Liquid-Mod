@@ -68,77 +68,91 @@ async def on_message(message):
     ) and not config["debug"]["debug_mode"]:
         return
 
-    if message.content.lower().contains(config["moderation"]["delete"].lower()):
-        await message.delete()
-        await direct_msg(
-            f"Your message has been deleted because your message contains banned text.",
-            message,
-        )
-
-    if message.content.lower().contains(config["moderation"]["kick"].lower()):
-        await message.delete()
-
-        member = message.guild.get_member(message.author.id)
-        if member is None:
-            try:
-                member = await message.guild.fetch_member(message.author.id)
-            except discord.NotFound:
-                print(f"Could not fetch member {message.author.name}.")
-
-        await direct_msg(
-            f"Your account has been kicked because your message contains banned text.",
-            message,
-        )
-
-        try:
-            await member.kick(reason="Sending banned text")
-        except discord.Forbidden:
-            print(f"Insufficient permissions to kick {message.author.name}.")
-
-    if message.content.lower().contains(config["moderation"]["ban"].lower()):
-        await message.delete()
-
-        member = message.guild.get_member(message.author.id)
-        if member is None:
-            try:
-                member = await message.guild.fetch_member(message.author.id)
-            except discord.NotFound:
-                print(f"Could not fetch member {message.author.name}.")
-
-        try:
-            try:
-                await member.ban(reason=f"Sending banned text")
-            except discord.Forbidden:
-                print(f"Insufficient permissions to ban {message.author.name}.")
+    for item in config["moderation"]["delete"]:
+        if item.lower() in message.content.lower():
+            await message.delete()
             await direct_msg(
-                f"Your account has been banned because your message contains banned text.",
+                f"Your message has been deleted because your message contains banned text: {item}",
                 message,
             )
-        except (discord.Forbidden, discord.HTTPException):
-            print(f"Couldn't DM {message.author.name}")
 
-    if message.content.lower().contains(config["moderation"]["mute"].lower()):
-        await message.delete()
+    for item in config["moderation"]["kick"]:
+        if item.lower() in message.content.lower():
+            await message.delete()
 
-        member = message.guild.get_member(message.author.id)
-        if member is None:
-            try:
-                member = await message.guild.fetch_member(message.author.id)
-            except discord.NotFound:
-                print(f"Could not fetch member {message.author.name}.")
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
 
-        try:
-            await member.timeout(
-                timedelta(minutes=config["moderation"]["time_to_mute"]),
-                reason="Sending banned text",
+            await direct_msg(
+                f"Your account has been kicked because your message contains banned text: {item}",
+                message,
             )
-        except discord.Forbidden:
-            print(f"Insufficient permissions to mute {message.author.name}.")
 
-        await direct_msg(
-            f"Your account has been muted for {config['moderation']['time_to_mute']} because your message contains banned text.",
-            message,
-        )
+            try:
+                await member.kick(reason="Sending banned text")
+            except discord.Forbidden:
+                print(f"Insufficient permissions to kick {message.author.name}.")
+                continue
+
+            continue
+
+    for item in config["moderation"]["ban"]:
+        if item.lower() in message.content.lower():
+            await message.delete()
+
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
+
+            try:
+                try:
+                    await member.ban(reason=f"Sending banned text")
+                except discord.Forbidden:
+                    print(f"Insufficient permissions to ban {message.author.name}.")
+                    continue
+                await direct_msg(
+                    f"Your account has been banned because your message contains banned text: {item}",
+                    message,
+                )
+            except (discord.Forbidden, discord.HTTPException):
+                print(f"Couldn't DM {message.author.name}")
+            continue
+
+    for item in config["moderation"]["mute"]:
+        if item.lower() in message.content.lower():
+            await message.delete()
+
+            member = message.guild.get_member(message.author.id)
+            if member is None:
+                try:
+                    member = await message.guild.fetch_member(message.author.id)
+                except discord.NotFound:
+                    print(f"Could not fetch member {message.author.name}.")
+                    continue
+
+            try:
+                await member.timeout(
+                    timedelta(minutes=config["moderation"]["time_to_mute"]),
+                    reason="Sending banned text",
+                )
+            except discord.Forbidden:
+                print(f"Insufficient permissions to mute {message.author.name}.")
+                continue
+
+            await direct_msg(
+                f"Your account has been muted for {config['moderation']['time_to_mute']} because your message contains banned text: {item}",
+                message,
+            )
+            continue
 
     if len(message.content) >= config["ai"]["min_chars"]:
         response = llm.create_chat_completion(
