@@ -71,7 +71,7 @@ async def on_message(message):
     if message.content.lower().contains(config["moderation"]["delete"].lower()):
         await message.delete()
         await direct_msg(
-            f"Your message has been deleted because your message contains banned text: {item}",
+            f"Your message has been deleted because your message contains banned text.",
             message,
         )
 
@@ -86,7 +86,7 @@ async def on_message(message):
                 print(f"Could not fetch member {message.author.name}.")
 
         await direct_msg(
-            f"Your account has been kicked because your message contains banned text: {item}",
+            f"Your account has been kicked because your message contains banned text.",
             message,
         )
 
@@ -111,7 +111,7 @@ async def on_message(message):
             except discord.Forbidden:
                 print(f"Insufficient permissions to ban {message.author.name}.")
             await direct_msg(
-                f"Your account has been banned because your message contains banned text: {item}",
+                f"Your account has been banned because your message contains banned text.",
                 message,
             )
         except (discord.Forbidden, discord.HTTPException):
@@ -136,7 +136,7 @@ async def on_message(message):
             print(f"Insufficient permissions to mute {message.author.name}.")
 
         await direct_msg(
-            f"Your account has been muted for {config['moderation']['time_to_mute']} because your message contains banned text: {item}",
+            f"Your account has been muted for {config['moderation']['time_to_mute']} because your message contains banned text.",
             message,
         )
 
