@@ -40,9 +40,7 @@ REM 4. Install Python dependencies
 pip install discord.py python-dotenv tomli
 
 REM 5. Download the model
-REM Download LFM2.5-1.2B-Instruct-Q4_K_M.gguf from:
-REM https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF
-REM Place it in a "models" folder in the project root
+REM See "Setting up the AI" section below
 ```
 
 ### Ubuntu (with llama-cpp-python)
@@ -73,7 +71,8 @@ pip install discord.py python-dotenv tomli
 
 # 6. Create models directory and download the model
 mkdir -p models
-cd models
+pip install huggingface-hub
+huggingface-cli download LiquidAI/LFM2.5-1.2B-Instruct-GGUF LFM2.5-1.2B-Instruct-Q4_K_M.gguf --local-dir models
 ```
 
 ### Unix (Linux / macOS)
@@ -97,6 +96,11 @@ pip install llama-cpp-python
 
 # 5. Install Python dependencies
 pip install discord.py python-dotenv tomli
+
+# 6. Create models directory and download the model
+mkdir -p models
+pip install huggingface-hub
+huggingface-cli download LiquidAI/LFM2.5-1.2B-Instruct-GGUF LFM2.5-1.2B-Instruct-Q4_K_M.gguf --local-dir models
 ```
 
 ### Setting up the AI
