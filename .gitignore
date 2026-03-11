@@ -4,4 +4,4 @@
 .miniforge3
 .ruff_cache
 .venv
-models/LFM2.5-1.2B-Instruct-Q4_K_M.gguf
+models/
