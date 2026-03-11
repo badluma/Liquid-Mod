@@ -3,6 +3,7 @@ delete = [
     "https://chee-ming-site.vercel.app/",
     "I am looking for a reliable and responsible partner who can expand my freelancing business.",
     "https://sessions0penseapro116.vercel.app/",
+    "https://mintprogress8.vercel.app/"
 ] # When a users message contains one of these, the message gets deleted
 kick = [] # When a users message contains one of these, the message gets deleted and the user gets kicked
 ban  = [] # When a users message contains one of these, the message gets deleted and the user gets permanently banned
